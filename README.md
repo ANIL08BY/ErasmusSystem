@@ -29,10 +29,13 @@ Projenin analiz, tasarım ve test planlama dokümanlarına aşağıdaki klasörd
 * **`/database`**: ER Diyagramları ve SQL Scriptleri (DataAccess katmanında uygulanmıştır).
 
 ## 🚀 Kurulum (Nasıl Ayağa Kaldırılır?)
-1.  `docker-compose up -d` komutu ile PostgreSQL veritabanını başlatın.
-2.  `ErasmusSystem.sln` dosyasını Visual Studio 2022 ile açın.
-3.  `Update-Database` komutu ile veritabanı tablolarını oluşturun.
-4.  Projeyi çalıştırın ve `/swagger` adresinden API dokümantasyonunu inceleyin.
+Prototip aşamasında olduğu için projeyi doğrudan Visual Studio üzerinden çalıştırabilirsiniz:
+
+1.  Bu repoyu bilgisayarınıza klonlayın veya indirin.
+2.  `ErasmusSystem.sln` dosyasını **Visual Studio 2022** ile açın.
+3.  **ErasmusSystem.API** projesine sağ tıklayıp "Set as Startup Project" (Başlangıç Projesi Yap) deyin.
+4.  `F5` tuşuna basarak projeyi çalıştırın.
+5.  Otomatik açılan tarayıcıda `/swagger` adresinden API dokümantasyonunu inceleyin.
 
 ---
 *Bu proje, T.C. Antalya Belek Üniversitesi (Temsili) Yazılım Mühendisliği Bölümü bitirme projesi kapsamında geliştirilmektedir.*

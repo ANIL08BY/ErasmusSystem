@@ -25,7 +25,7 @@ Bu projede "Shift-Left Testing" yaklaşımı benimsenmiş olup, geliştirme ile 
 ## 📂 Dokümantasyon
 Projenin analiz, tasarım ve test planlama dokümanlarına aşağıdaki klasörden erişebilirsiniz:
 
-* **`/docs`**: [Hafta 1-9 İlerleme Raporu ve Test Planları](./docs/Hafta%201-9%20Rapor.pdf)
+* **`/docs`**: [Proje Raporları (Hafta 1-9)](./docs/Antalya%20Belek%20Üniversitesi%20Erasmus%20Sistemi%20Test%20Geliştirme%20Projesi%20Proje%20Raporları.pdf)
 * **`/database`**: ER Diyagramları ve SQL Scriptleri (DataAccess katmanında uygulanmıştır).
 
 ## 🚀 Kurulum (Nasıl Ayağa Kaldırılır?)

@@ -1,4 +1,4 @@
-# 🎓 Erasmus Başvuru Sistemi - Test Otomasyon & Prototip Projesi
+# 🎓 ERASMUS SİSTEMİ TEST GELİŞTİRME PROJESİ
 
 **Ders:** Yazılım Mühendisliği Mezuniyet Projesi
 **Teknoloji:** .NET 8.0, PostgreSQL, Playwright, xUnit

@@ -19,7 +19,7 @@ Proje, Hafta 9 Raporunda belirtilen **5 Katmanlı Yapı** üzerine kurulmuştur:
 ## 🧪 Test Stratejisi
 Bu projede "Shift-Left Testing" yaklaşımı benimsenmiş olup, geliştirme ile eş zamanlı test yazımı hedeflenmiştir:
 1.  **Birim Testler (Unit Tests):** İş mantığı kurallarının doğrulanması.
-2.  **API Testleri:** Postman ve RestSharp ile servis uçlarının (Endpoints) kontrolü.
+2. **API Doğrulama ve Test:** Swagger UI (Manuel Kontrol), Postman ve RestSharp ile servis uçlarının (Endpoints) test edilmesi.
 3.  **UI Otomasyonu:** Playwright kullanılarak arayüz test senaryolarının koşulması.
 
 ## 📂 Dokümantasyon

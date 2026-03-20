@@ -38,13 +38,29 @@ namespace ErasmusSystem.API.Controllers
             return Ok(applications);
         }
 
-        [HttpPatch("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string newStatus)
+        // Koordinatörün Başvuruyu Onaylaması veya Reddetmesi (Tam Entegrasyon)
+        [HttpPatch("{applicationId}/status")]
+        public async Task<IActionResult> UpdateApplicationStatus(Guid applicationId, [FromBody] string newStatus)
         {
-            var success = await _applicationService.UpdateApplicationStatusAsync(id, newStatus);
-            if (!success) return NotFound(new { Error = "Başvuru bulunamadı." });
+            // İzin verilen statüler: APPROVED (Onaylandı), REJECTED (Reddedildi)
+            if (newStatus != "APPROVED" && newStatus != "REJECTED")
+            {
+                return BadRequest(new { Error = "Geçersiz statü. Sadece APPROVED veya REJECTED gönderilebilir." });
+            }
 
-            return Ok(new { Message = "Başvuru durumu güncellendi." });
+            var success = await _applicationService.UpdateApplicationStatusAsync(applicationId, newStatus);
+
+            if (!success)
+                return NotFound(new { Error = "Belirtilen ID'ye ait başvuru bulunamadı." });
+
+            return Ok(new { Message = $"Başvuru durumu başarıyla '{newStatus}' olarak güncellendi." });
+        }
+
+        [HttpGet("test-error")]
+        public IActionResult TestError()
+        {
+            // Middleware'i test etmek için kasıtlı olarak sistem hatası
+            throw new Exception("Bu, hata yakalayıcıyı denemek için fırlatılmış kasıtlı bir hatadır.");
         }
     }
 }

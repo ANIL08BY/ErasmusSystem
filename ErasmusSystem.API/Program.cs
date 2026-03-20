@@ -2,6 +2,8 @@ using ErasmusSystem.Business;
 using ErasmusSystem.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,6 +20,9 @@ builder.Services.AddDbContext<ErasmusDbContext>(options =>
 builder.Services.AddScoped<ApplicationService>();
 
 var app = builder.Build();
+
+// Merkezi Hata Yönetimi
+app.UseMiddleware<ErasmusSystem.API.Middlewares.GlobalExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

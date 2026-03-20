@@ -1,3 +1,4 @@
+using ErasmusSystem.Business;
 using ErasmusSystem.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 // PostgreSQL veritabaný baðlantýsýnýn sisteme tanýtýlmasý
 builder.Services.AddDbContext<ErasmusDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ApplicationService>();
 
 var app = builder.Build();
 

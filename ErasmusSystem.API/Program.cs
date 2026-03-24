@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// PostgreSQL veritabaný baðlantýsýnýn sisteme tanýtýlmasý
+// PostgreSQL veritabaný baðlantýsýnýn sisteme tanma
 builder.Services.AddDbContext<ErasmusDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 

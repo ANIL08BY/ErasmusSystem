@@ -18,7 +18,7 @@ namespace ErasmusSystem.API.Controllers
             _context = context;
         }
 
-        // Test için hızlıca veritabanına yeni bir öğrenci ekler ve ID'sini size verir
+        // Test için hızlıca veritabanına yeni bir öğrenci ekler ve ID verir
         [HttpPost("create-test-user")]
         public async Task<IActionResult> CreateTestUser()
         {
@@ -27,7 +27,7 @@ namespace ErasmusSystem.API.Controllers
                 Id = Guid.NewGuid(),
                 FirstName = "Test",
                 LastName = "Öğrenci",
-                // E-posta çakışması olmasın diye rastgele bir mail üretiyoruz
+                // E-posta çakışması olmasın diye rastgele bir mail üret
                 Email = $"testogrenci_{Guid.NewGuid().ToString().Substring(0, 5)}@belek.edu.tr",
                 PasswordHash = "test_sifre_hash",
                 Role = "Student"

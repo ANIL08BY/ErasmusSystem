@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ErasmusSystem.Business;
 using ErasmusSystem.Entities.DTOs;
@@ -6,6 +7,7 @@ using System;
 
 namespace ErasmusSystem.API.Controllers
 {
+    [Authorize] // Artık bu sınıftaki hiçbir işleme Token olmadan ulaşılamaz.
     [ApiController]
     [Route("api/[controller]")]
     public class ApplicationController : ControllerBase
@@ -57,6 +59,7 @@ namespace ErasmusSystem.API.Controllers
         }
 
         [HttpGet("test-error")]
+        [AllowAnonymous] // Kilitli bir sınıfta, sadece bu metoda herkesin girmesine izin vermek için bu kullanılır.
         public IActionResult TestError()
         {
             // Middleware'i test etmek için kasıtlı olarak sistem hatası

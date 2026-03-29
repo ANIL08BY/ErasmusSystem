@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using ErasmusSystem.Business;
 using ErasmusSystem.DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +16,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// PostgreSQL veritabaný baðlantýsýnýn sisteme tanma
+// PostgreSQL veritabaný baðlantýsýnýn sisteme tanýtma
 builder.Services.AddDbContext<ErasmusDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ApplicationService>();
+
+// JWT Kimlik Doðrulama Ayarlarý
+var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false; // Geliþtirme ortamýnda (localhost) sorun çýkmamasý için
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false, // Þimdilik esnek tut
+        ValidateAudience = false
+    };
+});
+
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
@@ -32,6 +58,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

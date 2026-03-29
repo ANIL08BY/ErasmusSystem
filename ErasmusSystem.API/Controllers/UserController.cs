@@ -29,14 +29,23 @@ namespace ErasmusSystem.API.Controllers
                 LastName = "Öğrenci",
                 // E-posta çakışması olmasın diye rastgele bir mail üret
                 Email = $"testogrenci_{Guid.NewGuid().ToString().Substring(0, 5)}@belek.edu.tr",
-                PasswordHash = "test_sifre_hash",
+
+                // Şifremizi "123456" olarak belirle ve BCrypt ile şifreleyerek kaydet
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
+
                 Role = "Student"
             };
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Test kullanıcısı başarıyla oluşturuldu!", UserId = newUser.Id });
+            // Login olurken kullanılacak Email'i Postman ekranında görebilmek için response'a (Email) ekle
+            return Ok(new
+            {
+                Message = "Test kullanıcısı başarıyla oluşturuldu!",
+                UserId = newUser.Id,
+                Email = newUser.Email
+            });
         }
     }
 }

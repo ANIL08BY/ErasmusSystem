@@ -4,6 +4,7 @@ using System.Text;
 using ErasmusSystem.Business;
 using ErasmusSystem.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using ErasmusSystem.DataAccess.Repositories;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -42,6 +43,11 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+
+// Biri senden IUserRepository isterse, ona UserRepository sýnýfýný ver
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 
 builder.Services.AddScoped<AuthService>();
 

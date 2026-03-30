@@ -42,6 +42,7 @@ namespace ErasmusSystem.API.Controllers
 
         // Koordinatörün Başvuruyu Onaylaması veya Reddetmesi (Tam Entegrasyon)
         [HttpPatch("{applicationId}/status")]
+        [Authorize(Roles = "Coordinator")] // Sadece Koordinatör
         public async Task<IActionResult> UpdateApplicationStatus(Guid applicationId, [FromBody] string newStatus)
         {
             // İzin verilen statüler: APPROVED (Onaylandı), REJECTED (Reddedildi)

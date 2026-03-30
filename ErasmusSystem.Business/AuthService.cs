@@ -9,18 +9,20 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ErasmusSystem.DataAccess.Repositories;
 
 namespace ErasmusSystem.Business
 {
     public class AuthService
     {
-        private readonly ErasmusDbContext _context;
+        // ARTIK DOĞRUDAN VERİTABANI(DbContext) YOK! SADECE INTERFACE VAR.
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
         // Constructor: Hem veritabanı bağlantısını hem de appsettings.json'ı okumak için IConfiguration'ı alıyor
-        public AuthService(ErasmusDbContext context, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
-            _context = context;
+            _userRepository = userRepository;
             _configuration = configuration;
         }
 
@@ -28,8 +30,8 @@ namespace ErasmusSystem.Business
         {
             if (loginDto.Email.EndsWith("@belek.edu.tr"))
             {
-                // 1. Adım: Veritabanından kullanıcıyı bul
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+                // 1.Adım: Artık veritabanı sorgusunu Repository yapıyor.
+                var user = await _userRepository.GetByEmailAsync(loginDto.Email);
 
                 if (user != null)
                 {
@@ -45,7 +47,10 @@ namespace ErasmusSystem.Business
                             Subject = new ClaimsIdentity(new[]
                             {
                                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                                new Claim(ClaimTypes.Email, user.Email)
+                                new Claim(ClaimTypes.Email, user.Email),
+
+                                // Kullanıcının veritabanındaki rolünü Token'a mühürle
+                                new Claim(ClaimTypes.Role, user.Role)
                             }),
                             Expires = DateTime.UtcNow.AddHours(2), // Token 2 saat geçerli olsun
                             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

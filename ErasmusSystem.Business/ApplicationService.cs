@@ -2,28 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ErasmusSystem.DataAccess;
+using ErasmusSystem.DataAccess.Repositories;
 using ErasmusSystem.Entities;
 using ErasmusSystem.Entities.DTOs;
-using Microsoft.EntityFrameworkCore;
 
 namespace ErasmusSystem.Business
 {
     public class ApplicationService
     {
-        private readonly ErasmusDbContext _context;
+        // Artık doğrudan veritabanı (DbContext) yok! İki tane Depo (Repository) var.
+        private readonly IApplicationRepository _applicationRepository;
+        private readonly IUserRepository _userRepository;
 
-        // Dependency Injection ile DbContext entegrasyonu
-        public ApplicationService(ErasmusDbContext context)
+        // Dependency Injection ile DbContext yerine Repository entegrasyonu
+        public ApplicationService(IApplicationRepository applicationRepository, IUserRepository userRepository)
         {
-            _context = context;
+            _applicationRepository = applicationRepository;
+            _userRepository = userRepository;
         }
 
         // 1. Yeni Başvuru Oluşturma (Insert)
         public async Task<ApplicationResponseDto> CreateApplicationAsync(ApplicationCreateDto dto)
         {
             // Kullanıcının sistemde var olup olmadığını kontrol eden entegrasyon noktası
-            var userExists = await _context.Users.AnyAsync(u => u.Id == dto.UserId);
+            var userExists = await _userRepository.UserExistsAsync(dto.UserId);
             if (!userExists)
             {
                 throw new Exception("Belirtilen ID'ye sahip bir kullanıcı bulunamadı.");
@@ -37,8 +39,7 @@ namespace ErasmusSystem.Business
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Applications.Add(application);
-            await _context.SaveChangesAsync();
+            await _applicationRepository.AddAsync(application);
 
             return new ApplicationResponseDto
             {
@@ -53,30 +54,30 @@ namespace ErasmusSystem.Business
         // 2. Öğrencinin Kendi Başvurularını Listelemesi (Select)
         public async Task<List<ApplicationResponseDto>> GetApplicationsByUserAsync(Guid userId)
         {
-            return await _context.Applications
-                .Where(a => a.UserId == userId)
-                .Select(a => new ApplicationResponseDto
-                {
-                    Id = a.Id,
-                    UserId = a.UserId,
-                    Term = a.Term,
-                    Status = a.Status,
-                    TotalScore = a.TotalScore,
-                    CreatedAt = a.CreatedAt
-                }).ToListAsync();
+            // Veriyi depodan çekip burada DTO'ya dönüştür
+            var applications = await _applicationRepository.GetByUserIdAsync(userId);
+
+            return applications.Select(a => new ApplicationResponseDto
+            {
+                Id = a.Id,
+                UserId = a.UserId,
+                Term = a.Term,
+                Status = a.Status,
+                TotalScore = a.TotalScore,
+                CreatedAt = a.CreatedAt
+            }).ToList();
         }
 
         // 3. Başvuru Durumunu Güncelleme (Update - Koordinatör Onayı/Reddi için)
         public async Task<bool> UpdateApplicationStatusAsync(Guid applicationId, string newStatus)
         {
-            var app = await _context.Applications.FindAsync(applicationId);
+            var app = await _applicationRepository.GetByIdAsync(applicationId);
             if (app == null) return false;
 
             app.Status = newStatus;
             app.UpdatedAt = DateTime.UtcNow;
 
-            _context.Applications.Update(app);
-            await _context.SaveChangesAsync();
+            await _applicationRepository.UpdateAsync(app);
             return true;
         }
     }
